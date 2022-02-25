@@ -7,5 +7,5 @@ class User(models.Model):
     password = models.CharField(max_length=20)
     email = models.CharField(max_length=40, unique=True)
     phone = models.CharField(max_length=20)
-    gender = models.CharField(max_length=5)
+    gender = models.CharField(max_length=6)
     avatar = models.ImageField(upload_to='avatar/', default=None)
