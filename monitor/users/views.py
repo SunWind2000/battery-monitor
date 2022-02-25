@@ -1,8 +1,12 @@
-from django.views.decorators.http import require_http_methods
-from django.http import JsonResponse
-from django.core import serializers
-from . import models
+import datetime
 import json
+import os
+
+from django.core import serializers
+from django.http import JsonResponse
+from django.views.decorators.http import require_http_methods
+
+from . import models
 
 
 @require_http_methods(['GET'])
@@ -110,4 +114,35 @@ def update_user_pwd(request):
             response['status'] = 'error'
             response['error_msg'] = str(e)
             response['data'] = data
+    return JsonResponse(response)
+
+
+@require_http_methods(['POST'])
+def upload_user_avatar(request):
+    """
+    :param request: HTTP request
+    :return: JSON response
+    """
+    response = {}
+    img = request.FILES['userAvatar']
+    username = request.POST.get('username')
+    new_img_name = username + '-' + datetime.datetime.now().strftime('%Y%m%d%H%M%S') + '.png'
+    data = {
+        "img_name": 'avatar/' + new_img_name
+    }
+    try:
+        usr = models.User.objects.get(username=username)
+        if usr:
+            usr.avatar.save(new_img_name, img)
+            response['status'] = 'success'
+            response['error_msg'] = ''
+            response['data'] = data
+        else:
+            response['status'] = 'failure'
+            response['error_msg'] = '头像上传失败'
+            response['data'] = data
+    except Exception as e:
+        response['status'] = 'error'
+        response['error_msg'] = str(e)
+        response['data'] = data
     return JsonResponse(response)
