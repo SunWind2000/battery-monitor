@@ -22,5 +22,6 @@ from users import urls
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(urls)),
+    # 上传文件的共享路径
     re_path(r'upload/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ]

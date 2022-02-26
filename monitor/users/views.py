@@ -1,6 +1,5 @@
 import datetime
 import json
-import os
 
 from django.core import serializers
 from django.http import JsonResponse
@@ -124,8 +123,10 @@ def upload_user_avatar(request):
     :return: JSON response
     """
     response = {}
+    # 获得前端POST发送的图片对象
     img = request.FILES['userAvatar']
     username = request.POST.get('username')
+    # 格式化图片名称
     new_img_name = username + '-' + datetime.datetime.now().strftime('%Y%m%d%H%M%S') + '.png'
     data = {
         "img_name": 'avatar/' + new_img_name
@@ -133,6 +134,7 @@ def upload_user_avatar(request):
     try:
         usr = models.User.objects.get(username=username)
         if usr:
+            # 保存图片到文件夹
             usr.avatar.save(new_img_name, img)
             response['status'] = 'success'
             response['error_msg'] = ''
