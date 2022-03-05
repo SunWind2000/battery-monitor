@@ -17,11 +17,13 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from django.conf import settings
 from django.views.static import serve
-from users import urls
+import users.urls
+import system.urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include(urls)),
+    path('api/', include(users.urls)),
+    path('system/', include(system.urls)),
     # 上传文件的共享路径
     re_path(r'upload/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ]

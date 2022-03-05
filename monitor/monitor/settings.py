@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'corsheaders',
     # 用户模块
     'users',
+    # 系统模块
+    'system',
 ]
 
 MIDDLEWARE = [
