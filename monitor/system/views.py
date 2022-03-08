@@ -33,3 +33,35 @@ def get_system_data(request):
             response['error_msg'] = str(e)
             response['data'] = None
         return JsonResponse(response)
+
+
+@require_http_methods(['GET'])
+def get_battery_cell_data(request):
+    """
+    :param request: GET
+    :return: JSON response
+    """
+    response = {}
+    if request.method == 'GET':
+        battery_id = request.GET.get('batteryId')
+        try:
+            battery_num = models.Battery.objects.filter(battery_id=battery_id).count()
+            if battery_num:
+                week_data = models.Battery.objects.filter(
+                    battery_id=battery_id,
+                    id__lt=battery_num + 1,
+                    id__gt=battery_num - 7,
+                )
+                if week_data:
+                    response['status'] = 'success'
+                    response['error_msg'] = ''
+                    response['data'] = json.loads(serializers.serialize('json', week_data))
+                else:
+                    response['status'] = 'failure'
+                    response['error_msg'] = '数据库检索错误'
+                    response['data'] = None
+        except Exception as e:
+            response['status'] = 'error'
+            response['error_msg'] = str(e)
+            response['data'] = None
+        return JsonResponse(response)

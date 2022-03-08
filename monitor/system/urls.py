@@ -3,4 +3,5 @@ from . import views
 
 urlpatterns = [
     re_path('get-system-data', views.get_system_data),
+    re_path('get-battery-cell-data', views.get_battery_cell_data),
 ]
