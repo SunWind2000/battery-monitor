@@ -65,3 +65,29 @@ def get_battery_cell_data(request):
             response['error_msg'] = str(e)
             response['data'] = None
         return JsonResponse(response)
+
+
+@require_http_methods(['GET'])
+def get_history_system_info(request):
+    """
+    获取系统的错误、报警等历史数据信息
+    :param request:
+    :return: Json response
+    """
+    response = {}
+    if request.method == 'GET':
+        try:
+            history_msg = models.Message.objects.all()
+            if history_msg:
+                response['status'] = 'success'
+                response['error_msg'] = ''
+                response['data'] = json.loads(serializers.serialize('json', history_msg))
+            else:
+                response['status'] = 'failure'
+                response['error_msg'] = '数据库查询错误'
+                response['data'] = None
+        except Exception as e:
+            response['status'] = 'error'
+            response['error_msg'] = str(e)
+            response['data'] = None
+    return JsonResponse(response)

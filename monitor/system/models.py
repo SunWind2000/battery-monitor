@@ -59,3 +59,24 @@ class Battery(models.Model):
     cell_soc = models.FloatField(default=22.6)
     cell_soh = models.FloatField(default=0.963)
 
+
+# 故障信息数据表
+class Message(models.Model):
+    # 故障时间
+    datetime1 = models.CharField(max_length=20)
+    # 接收时间
+    datetime2 = models.CharField(max_length=20)
+    # 描述信息
+    msg = models.TextField(default='')
+
+
+# 通知信息数据表
+class Notice(models.Model):
+    # 时间
+    datetime1 = models.CharField(max_length=20)
+    # 摘要
+    abstract = models.CharField(max_length=50)
+    # 详情
+    details = models.TextField(default='')
+
+

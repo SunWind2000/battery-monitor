@@ -1,6 +1,7 @@
 import logging
 
 from mqtt.connect import topic, mqtt_connect
+from mqtt.decode import K9120CanDecode
 
 
 def subscribe(client):
