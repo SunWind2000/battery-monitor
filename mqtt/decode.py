@@ -279,7 +279,6 @@ class K9120CanDecode:
         :return: 返回处理后的帧数据
         """
         res = None
-        frame_data = self.get_frame_data()
         frame_id = self.get_frame_id()
         if hex(0x100) < frame_id < hex(0x400):
             # 此时帧数据为反馈帧数据
@@ -349,7 +348,7 @@ class K9120CanDecode:
 
 
 if __name__ == "__main__":
-    Frame = ['00', '00', '08', '00', '00', '00', '55', '44', '33', '22', '11', '44', '33', '22', '11', 'd8']
+    Frame = ['00', '00', '08', '00', '00', '01', '8a', '44', '33', '44', '26', '44', '33', '44', '33', '5f']
     Can = K9120CanDecode(Frame)
     print('模块ID：' + Can.get_module_id())
     print('帧ID：' + Can.get_frame_id())
