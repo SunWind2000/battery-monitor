@@ -348,7 +348,7 @@ class K9120CanDecode:
 
 
 if __name__ == "__main__":
-    Frame = ['00', '00', '08', '00', '00', '01', '8a', '44', '33', '44', '26', '44', '33', '44', '33', '5f']
+    Frame = ['00', '00', '08', '00', '00', '00', '54', 'f2', '64', 'f2', '76', '22', '22', '22', '22', '5f']
     Can = K9120CanDecode(Frame)
     print('模块ID：' + Can.get_module_id())
     print('帧ID：' + Can.get_frame_id())

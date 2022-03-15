@@ -1,3 +1,18 @@
+"""
+生成电池系统模拟数据帧
+
+Author: 孙昊阳
+Created on: 2022/03/14
+API:
+  - generate_module_id(_id=None)
+  - generate_common_frame_id(num)
+  - generate_feedback_frame_id(num)
+  - generate_data(Type)
+  - generate_verification(module_id, frame_id, data)
+  - generate_frame(module_id, frame_id, data, veri)
+"""
+
+
 import random
 from mqtt.decode import K9120CanDecode
 
@@ -64,28 +79,70 @@ def generate_data(Type):
     """
     data = []
     if Type == 1:
-        # 生成反馈帧最高最低的电压数据
+        # 生成反馈帧单体电池Cell1-24电压信息
         standard_vol = 35
         offset = random.randint(0, 15)
         max_vol = standard_vol + offset
-        min_vol = standard_vol - offset + 10
+        min_vol = standard_vol - offset // 2
         data.append('44')
         data.append(str(max_vol))
         data.append('44')
         data.append(str(min_vol))
         offset = random.randint(0, 15)
         max_vol = standard_vol + offset
-        min_vol = standard_vol - offset + 10
+        min_vol = standard_vol - offset // 2
         data.append('44')
         data.append(str(max_vol))
         data.append('44')
         data.append(str(min_vol))
     elif Type == 2:
-        pass
+        # 生成反馈帧单体电池Cell1-8温度信息
+        stanard_temp = 45
+        offest = random.randint(0, 20)
+        max_temp = stanard_temp + offest
+        min_temp = stanard_temp - offest - 5
+        data.append(str(max_temp))
+        data.append('6c')
+        data.append(str(min_temp))
+        data.append('6c')
+        offest = random.randint(0, 20)
+        max_temp = stanard_temp + offest
+        min_temp = stanard_temp - offest - 5
+        data.append(str(max_temp))
+        data.append('6c')
+        data.append(str(min_temp))
+        data.append('6c')
     elif Type == 3:
-        pass
+        # 生成反馈帧单体电池最高最低电压温度信息
+        standard_vol = 35
+        standard_temp = 45
+        vol_offset = random.randint(0, 15)
+        temp_offset = random.randint(0, 20)
+        max_temp = standard_temp + temp_offset
+        min_temp = standard_temp - temp_offset - 5
+        max_vol = standard_vol + vol_offset
+        min_vol = standard_vol - vol_offset // 2
+        data.append('44')
+        data.append(str(max_vol))
+        data.append('44')
+        data.append((str(min_vol)))
+        data.append(str(max_temp))
+        data.append('5c')
+        data.append(str(min_temp))
+        data.append('5c')
     elif Type == 4:
-        pass
+        # 生成常发帧系统电压信息
+        standard_vol = 55
+        offset = random.randint(0, 10)
+        max_vol = standard_vol * offset * 10
+        min_vol = standard_vol - offset - 5
+        data.append('c5')
+        data.append(str(max_vol))
+        data.append('f2')
+        data.append(str(min_vol))
+        data.append('ed')
+        for i in range(3):
+            data.append(str(standard_vol + 5 * i))
     elif Type == 5:
         pass
     else:
@@ -132,18 +189,43 @@ def generate_frame(module_id, frame_id, data, veri):
 
 
 if __name__ == "__main__":
-    module_id = generate_module_id()
-    frame_id = generate_feedback_frame_id(2)
-    data = generate_data(1)
+    module_id = generate_module_id(45)
+    frame_id = generate_feedback_frame_id(0)
+    data = generate_data(3)
     veri = generate_verification(module_id, frame_id, data)
     frame = generate_frame(module_id, frame_id, data, veri)
-    print('CAN数据帧：')
-    print(frame)
+
+    frame_str = ''
+    for i in range(len(frame)):
+        frame_str += frame[i]
     Can = K9120CanDecode(frame)
     data2 = Can.handle_frame_data()
     str_data2 = ''
     for i in range(len(data2)):
         str_data2 += str(data2[i]) + ' '
+
+    print('CAN反馈帧：' + frame_str)
+    print('模块ID：' + Can.get_module_id())
+    print('帧ID：' + Can.get_frame_id())
+    print('Masked ID：' + Can.get_frame_type())
+    print('温度电压信息：' + str_data2)
+
+    module_id = generate_module_id(32)
+    frame_id = generate_common_frame_id(0)
+    data_ = generate_data(4)
+    veri = generate_verification(module_id, frame_id, data_)
+    frame = generate_frame(module_id, frame_id, data_, veri)
+
+    frame_str = ''
+    for i in range(len(frame)):
+        frame_str += frame[i]
+    Can = K9120CanDecode(frame)
+    data2 = Can.handle_frame_data()
+    str_data2 = ''
+    for i in range(len(data2)):
+        str_data2 += str(data2[i]) + ' '
+
+    print('CAN反馈帧：' + frame_str)
     print('模块ID：' + Can.get_module_id())
     print('帧ID：' + Can.get_frame_id())
     print('Masked ID：' + Can.get_frame_type())
